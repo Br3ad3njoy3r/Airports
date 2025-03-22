@@ -8,18 +8,27 @@ int main(int argc, char* argv[]){
     }
     file.open(argv[1]);
 
-    port tmp;
+    graph airportData;
     string data;
 
-    while (getline(file, tmp.code, ',')){
+    while (getline(file, data, ',')){
+        port* tmp = new port();
+        tmp->code=data;
+        
         getline(file, data, ',');
-        data.erase(remove_if(data.begin(), data.end(), ' '), data.end());
-        
-        
-        getline(file, tmp.city, ',');
+        data.erase(0,1); //removing the " " characer from the very beginning fo the string
+        tmp->name=data;
 
-        getline(file, tmp.state);
+        getline(file, data, ',');
+        data.erase(0,1);
+        tmp->city=data;
 
-        cout << tmp.code << "t" << endl;
+        getline(file, data);
+        data.erase(0,1);
+        tmp->state=data;
+
+        airportData.Add(tmp);
     }
+    file.close();
+    airportData.LookUp("ABQ");
 }
