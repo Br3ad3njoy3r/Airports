@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <queue>
+#include <array>
 using namespace std;
 
 struct flights {
@@ -41,7 +42,12 @@ struct trieNode {
     }
 };
 
-
+struct statePorts {
+    string code;
+    string name;
+    string city;
+    string state;
+};
 
 class flight_graph {
     public:
@@ -54,8 +60,11 @@ class flight_graph {
         void listFlightsDeparting(string code);
         void listFlightsArriving(string code);
         void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
+        void addStatePort(port* record);
     private:
         int portCount;
+        //array<vector<statePorts>, 50> states;
+        vector<statePorts> states[50];
         trieNode* trieTable;
 };
 
@@ -184,7 +193,31 @@ void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
     }
 }
 
-void graph::listAirportsInState(string state)
-{
-    
+int hashFunction(string name){
+    int hash = 0;
+    for (char c : name){
+        hash += (31 * hash + c);
+    }
+    return hash % 50;
+}
+
+void graph::listAirportsInState(string state){
+    int hash = hashFunction(state);
+    int counter = 0;
+    for (auto s : states[hash]){
+        if (s.state == state){
+            cout << s.state << ", " << s.code << ", " << s.city << ", " << s.name << endl;
+            counter++;
+        }
+    } cout << "Total # of airports in "<< state << ": " << counter << endl;
+}
+
+void graph::addStatePort(port *record){
+    int hash = hashFunction(record->state);
+    statePorts tmp;
+    tmp.city = record->city;
+    tmp.code = record->code;
+    tmp.state = record->state;
+    tmp.name = record->name;
+    states[hash].push_back(tmp);
 }

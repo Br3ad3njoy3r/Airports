@@ -19,20 +19,23 @@ int main(int argc, char* argv[]){
 
     while (getline(file, data, ',')){
         port* tmp = new port();
+
         tmp->code=data;
         
         getline(file, data, ',');
-        data.erase(0,1); //removing the " " characer from the very beginning fo the string
+        //data.erase(0,1); //removing the " " characer from the very beginning fo the string
         tmp->name=data;
 
         getline(file, data, ',');
-        data.erase(0,1);
+        //data.erase(0,1);
         tmp->city=data;
 
         getline(file, data);
-        data.erase(0,1);
+        //data.erase(0,1);
         tmp->state=data;
 
+
+        airportData.addStatePort(tmp);
         airportData.Add(tmp);
     }
     file.close();
@@ -79,7 +82,6 @@ int main(int argc, char* argv[]){
 
     airportData.listFlightsDeparting("ABQ");
     airportData.listFlightsArriving("AUS");
-    airportData.listFlightsToAndFromSameAirport("ABQ", "AUS");
-
-    airportData.listAirportsInState("SD");
+    airportData.listFlightsToAndFromSameAirport("LAS","LAX");
+    airportData.listAirportsInState("CA");
 }
