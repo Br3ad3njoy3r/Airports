@@ -3,9 +3,11 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <queue>
 using namespace std;
 
 struct flights {
+    string source;
     string destination;
     int departure;
     int arrival;
@@ -22,7 +24,8 @@ struct airports {
     string name;
     string city;
     string state;
-    vector<flight> destinations;
+    vector<flight> departures;
+    vector<flight> arrivals;
 };
 
 using port = struct airports;
@@ -46,6 +49,11 @@ class flight_graph {
         void Add(port* record);
         void LookUp(string code);
         void airportCount();
+        port* returnAirport(string code);
+        void listAirportsInState(string state);
+        void listFlightsDeparting(string code);
+        void listFlightsArriving(string code);
+        void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
     private:
         int portCount;
         trieNode* trieTable;
@@ -81,17 +89,102 @@ void graph::LookUp(string code){
     trieNode* current = trieTable;
     for (char c : code){
         if (current->child[c-'A']==nullptr){
-            cout << "Airport: " << code << "not found." << endl;
+            cout << "Airport: " << code << " not found." << endl;
         }
         current=current->child[c-'A'];
     }
     if (current->endKey==true){
-        cout << "Airport: " << current->airport->code << " found." << endl;
+        cout << "Airport: " << current->airport->code << " found." << endl << "Airport name: " << current->airport->name << endl << "Airport city: " << current->airport->city << ", " << current->airport->state << endl;
     } else {
-        cout << "Airport: " << code << "not found." << endl;
+        cout << "Airport: " << code << " not found." << endl;
     }
 }
 
 void graph::airportCount(){
     cout << "Total airports: " << portCount << endl;
+}
+
+port* graph::returnAirport(string code){
+    trieNode* current = trieTable;
+    port* tmp;
+    for (char c : code){
+        if (current->child[c-'A']==nullptr){
+            cout << "Airport: " << code << " not found." << endl;
+        }
+        current=current->child[c-'A'];
+    }
+    if (current->endKey==true){
+        return current->airport;
+    } else {
+        cout << "Airport: " << code << " not found." << endl;
+        return NULL;
+    }
+}
+
+void graph::listFlightsDeparting(string code)
+{
+    trieNode* current = trieTable;
+    for (char c : code){
+        if (current->child[c-'A']==nullptr){
+            cout << "Airport: " << code << " not found." << endl;
+        }
+        current=current->child[c-'A'];
+    }
+    if (current->endKey==true){
+        cout << "Flights departing from " << code << ": " << endl;
+        for(flight f : current->airport->departures)
+        {
+            cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
+        }
+    } else {
+        cout << "Airport: " << code << " not found." << endl;
+    }
+}
+
+void graph::listFlightsArriving(string code)
+{
+    trieNode* current = trieTable;
+    for (char c : code){
+        if (current->child[c-'A']==nullptr){
+            cout << "Airport: " << code << " not found." << endl;
+        }
+        current=current->child[c-'A'];
+    }
+    if (current->endKey==true){
+        cout << "Flights arriving at " << code << ": " << endl;
+        for(flight f : current->airport->arrivals)
+        {
+            cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
+        }
+    } else {
+        cout << "Airport: " << code << " not found." << endl;
+    }
+}
+
+void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
+{
+    trieNode* current = trieTable;
+    for (char c : depart){
+        if (current->child[c-'A']==nullptr){
+            cout << "Airport: " << depart << " not found." << endl;
+        }
+        current=current->child[c-'A'];
+    }
+    if (current->endKey==true){
+        cout << "Flights departing from " << depart << " and arriving at " << arrive << ": " << endl;
+        for(flight f : current->airport->departures)
+        {
+            if(f.destination == arrive)
+            {
+                cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
+            }         
+        }
+    } else {
+        cout << "Airport: " << depart << " not found." << endl;
+    }
+}
+
+void graph::listAirportsInState(string state)
+{
+    
 }
