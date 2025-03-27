@@ -18,22 +18,28 @@ int main(int argc, char* argv[]){
     string data;
 
     while (getline(file, data, ',')){
-        port* tmp = new port();
-        tmp->code=data;
+        port* portTmp = new port();
+        state stateTmp;
+        portTmp->code=data;
+        stateTmp.code=data;
         
         getline(file, data, ',');
         // data.erase(0,1); //removing the " " characer from the very beginning fo the string
-        tmp->name=data;
+        portTmp->name=data;
+        stateTmp.name=data;
 
         getline(file, data, ',');
         // data.erase(0,1);
-        tmp->city=data;
+        portTmp->city=data;
+        stateTmp.city=data;
 
         getline(file, data);
         // data.erase(0,1);
-        tmp->state=data;
+        portTmp->state=data;
+        stateTmp.state=data;
 
-        airportData.Add(tmp);
+        airportData.Add(portTmp);
+        airportData.addAirportsToState(stateTmp);
     }
     file.close();
 
