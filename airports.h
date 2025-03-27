@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <queue>
+#include <stack>
 using namespace std;
 
 struct flights {
@@ -61,6 +62,9 @@ class flight_graph {
         void listFlightsDeparting(string code);
         void listFlightsArriving(string code);
         void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
+        void DFS(string code, string destination);
+        void BFS(string code, string destination);
+        void dijkstra(string code, string destination);
         void addAirportsToState(state record);
     private:
         int portCount;
@@ -213,6 +217,73 @@ void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
     } else {
         cout << "Airport: " << depart << " not found." << endl;
     }
+}
+
+void graph::DFS(string code, string destination)
+{
+    stack<string> st;
+    string current;
+    vector<string> visited;
+    port* tmpPort = new port();
+    st.push(code);
+    while(!st.empty())
+    {
+        current = st.top();
+        st.pop();
+        if(find(visited.begin(), visited.end(), current) == visited.end())
+        {
+            cout << current << " ";
+            visited.push_back(current);
+            tmpPort = returnAirport(current);
+            for(flight f : tmpPort->departures)
+            {
+                if(find(visited.begin(), visited.end(), f.destination) == visited.end())
+                    st.push(f.destination);
+            }
+        }
+    }
+
+    cout << endl;
+    if(find(visited.begin(), visited.end(), destination) != visited.end())
+        cout << "There is a path from " << code << " to " << destination << endl;
+    else
+        cout << "No path found from " << code << " to " << destination << endl;
+}
+
+void graph::BFS(string code, string destination)
+{
+    queue<string> q;
+    string current;
+    vector<string> visited;
+    port* tmpPort = new port();
+    q.push(code);
+    while(!q.empty())
+    {
+        current = q.front();
+        q.pop();
+        if(find(visited.begin(), visited.end(), current) == visited.end())
+        {
+            cout << current << " ";
+            visited.push_back(current);
+            tmpPort = returnAirport(current);
+            for(flight f : tmpPort->departures)
+            {
+                if(find(visited.begin(), visited.end(), f.destination) == visited.end())
+                    q.push(f.destination);
+            }
+        }
+    }
+
+    cout << endl;
+    if(find(visited.begin(), visited.end(), destination) != visited.end())
+        cout << "There is a path from " << code << " to " << destination << endl;
+    else
+        cout << "No path found from " << code << " to " << destination << endl;
+}
+
+void graph::dijkstra(string code, string destination)
+{
+  
 }
 
 void graph::listAirportsInState(string state)
