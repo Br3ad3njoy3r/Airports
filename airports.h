@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <queue>
+#include <stack>
 using namespace std;
 
 struct flights {
@@ -54,6 +55,8 @@ class flight_graph {
         void listFlightsDeparting(string code);
         void listFlightsArriving(string code);
         void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
+        void DFS(string code, string destination);
+        void graph::dijkstra(string code, string destination);
     private:
         int portCount;
         trieNode* trieTable;
@@ -196,4 +199,40 @@ void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
 void graph::listAirportsInState(string state)
 {
     
+}
+
+void graph::DFS(string code, string destination)
+{
+    stack<string> st;
+    string current;
+    vector<string> visited;
+    port* tmpPort = new port();
+    st.push(code);
+    while(!st.empty())
+    {
+        current = st.top();
+        st.pop();
+        if(find(visited.begin(), visited.end(), current) == visited.end())
+        {
+            cout << current << " ";
+            visited.push_back(current);
+            tmpPort = returnAirport(current);
+            for(flight f : tmpPort->departures)
+            {
+                if(find(visited.begin(), visited.end(), f.destination) == visited.end())
+                    st.push(f.destination);
+            }
+        }
+    }
+
+    cout << endl;
+    if(find(visited.begin(), visited.end(), destination) != visited.end())
+        cout << "There is a path from " << code << " to " << destination << endl;
+    else
+        cout << "No path found from " << code << " to " << destination << endl;
+}
+
+void graph::dijkstra(string code, string destination)
+{
+
 }
