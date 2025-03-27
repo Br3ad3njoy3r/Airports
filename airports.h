@@ -56,7 +56,8 @@ class flight_graph {
         void listFlightsArriving(string code);
         void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
         void DFS(string code, string destination);
-        void graph::dijkstra(string code, string destination);
+        void BFS(string code, string destination);
+        void dijkstra(string code, string destination);
     private:
         int portCount;
         trieNode* trieTable;
@@ -221,6 +222,37 @@ void graph::DFS(string code, string destination)
             {
                 if(find(visited.begin(), visited.end(), f.destination) == visited.end())
                     st.push(f.destination);
+            }
+        }
+    }
+
+    cout << endl;
+    if(find(visited.begin(), visited.end(), destination) != visited.end())
+        cout << "There is a path from " << code << " to " << destination << endl;
+    else
+        cout << "No path found from " << code << " to " << destination << endl;
+}
+
+void graph::BFS(string code, string destination)
+{
+    queue<string> q;
+    string current;
+    vector<string> visited;
+    port* tmpPort = new port();
+    q.push(code);
+    while(!q.empty())
+    {
+        current = q.front();
+        q.pop();
+        if(find(visited.begin(), visited.end(), current) == visited.end())
+        {
+            cout << current << " ";
+            visited.push_back(current);
+            tmpPort = returnAirport(current);
+            for(flight f : tmpPort->departures)
+            {
+                if(find(visited.begin(), visited.end(), f.destination) == visited.end())
+                    q.push(f.destination);
             }
         }
     }
