@@ -23,15 +23,15 @@ int main(int argc, char* argv[]){
         tmp->code=data;
         
         getline(file, data, ',');
-        //data.erase(0,1); //removing the " " characer from the very beginning fo the string
+        // //data.erase(0,1); //removing the " " characer from the very beginning fo the string
         tmp->name=data;
 
         getline(file, data, ',');
-        //data.erase(0,1);
+        data.erase(0,1);
         tmp->city=data;
 
         getline(file, data);
-        //data.erase(0,1);
+        data.erase(0,1);
         tmp->state=data;
 
 
@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
 
     airportData.listFlightsDeparting("ABQ");
     airportData.listFlightsArriving("AUS");
-    airportData.listFlightsToAndFromSameAirport("LAS","LAX");
-    airportData.listAirportsInState("CA");
+    airportData.listFlightsToAndFromSameAirport("ABQ", "AUS");
+
+    airportData.listAirportsInState("SD");
 }

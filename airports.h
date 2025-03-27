@@ -132,6 +132,7 @@ port* graph::returnAirport(string code){
 
 void graph::listFlightsDeparting(string code)
 {
+    int counter = 0;
     trieNode* current = trieTable;
     for (char c : code){
         if (current->child[c-'A']==nullptr){
@@ -143,8 +144,10 @@ void graph::listFlightsDeparting(string code)
         cout << "Flights departing from " << code << ": " << endl;
         for(flight f : current->airport->departures)
         {
+            counter++;
             cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
         }
+        cout << "# of flights departing from " << code << ": " << counter << endl;
     } else {
         cout << "Airport: " << code << " not found." << endl;
     }
@@ -152,6 +155,7 @@ void graph::listFlightsDeparting(string code)
 
 void graph::listFlightsArriving(string code)
 {
+    int counter = 0;
     trieNode* current = trieTable;
     for (char c : code){
         if (current->child[c-'A']==nullptr){
@@ -163,8 +167,10 @@ void graph::listFlightsArriving(string code)
         cout << "Flights arriving at " << code << ": " << endl;
         for(flight f : current->airport->arrivals)
         {
+            counter++;
             cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
         }
+        cout << "# of flights arriving to " << code << ": " << counter << endl;
     } else {
         cout << "Airport: " << code << " not found." << endl;
     }
@@ -172,6 +178,7 @@ void graph::listFlightsArriving(string code)
 
 void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
 {
+    int counter = 0;
     trieNode* current = trieTable;
     for (char c : depart){
         if (current->child[c-'A']==nullptr){
@@ -185,9 +192,11 @@ void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
         {
             if(f.destination == arrive)
             {
+                counter++;
                 cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << " " << endl;
             }         
         }
+        cout << "# of flights departing from " << depart << " and arriving at " << arrive << ": " << counter << endl;
     } else {
         cout << "Airport: " << depart << " not found." << endl;
     }
