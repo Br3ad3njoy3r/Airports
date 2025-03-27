@@ -30,6 +30,13 @@ struct airports {
 
 using port = struct airports;
 
+struct state {
+    string code;
+    string name;
+    string city;
+    string state;
+};
+
 struct trieNode {
     trieNode* child[26];
     bool endKey;
@@ -54,9 +61,11 @@ class flight_graph {
         void listFlightsDeparting(string code);
         void listFlightsArriving(string code);
         void listFlightsToAndFromSameAirport(string depart, string arrive); //this should probably have a name change but i couldnt think of anything better lmao
+        void addAirportsToState(state record);
     private:
         int portCount;
         trieNode* trieTable;
+        vector<state> states[50];
 };
 
 using graph = flight_graph;
@@ -83,6 +92,19 @@ void graph::Add(port* record){
         portCount++;
         current->endKey=true;
     }
+}
+
+int hashFunciton(string name){
+    int hash = 0;
+    for (char c : name){
+        hash += (31*c + hash);
+    }
+    return hash % 50;
+}
+
+void graph::addAirportsToState(state record){
+    int hashValue = hashFunciton(record.state);
+    states[hashValue].push_back(record);
 }
 
 void graph::LookUp(string code){
@@ -195,5 +217,13 @@ void graph::listFlightsToAndFromSameAirport(string depart, string arrive)
 
 void graph::listAirportsInState(string state)
 {
-    
+    int hashValue = hashFunciton(state);
+    int counter = 0;
+    for (auto p : states[hashValue]){
+        if (p.state == state){
+            cout << "Airport: " << p.code << " found." << endl << "Airport name: " << p.name << endl << "Airport city: " << p.city << ", " << p.state << endl;
+            counter++;
+        }
+    }
+    cout << "# of Airports in " << state << ": " << counter << endl;
 }
