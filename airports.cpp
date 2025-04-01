@@ -30,13 +30,13 @@ int main(int argc, char* argv[]){
 
         getline(file, data, ',');
         // data.erase(0,1);
-        portTmp->city=data;
-        stateTmp.city=data;
+        portTmp->state=data;
+        stateTmp.state=data;
 
         getline(file, data);
         // data.erase(0,1);
-        portTmp->state=data;
-        stateTmp.state=data;
+        portTmp->city=data;
+        stateTmp.city=data;
 
         airportData.Add(portTmp);
         airportData.addAirportsToState(stateTmp);
@@ -80,12 +80,14 @@ int main(int argc, char* argv[]){
     }
     file.close();
 
+    // airportData.dijkstra("LAX", "DEN");
+
     int input;
     string code1, code2, state;
     while(input != -1)
     {
         cout << "---------------------------------------------------------------------" << endl;
-        cout << " 1 - Lookup Aiport by Code" << endl << " 2 - List Airports in a State" << endl << " 3 - List Flights Departing from an Airport" << endl << " 4 - List Flights Arriving at an Airport" << endl << " 5 - List Flights to and from Specific Airports " << endl << " 6 - Check if you can fly from one airport to another (DFS)" << endl << " 7 - Check if you can fly from one airport to another (BFS)" << endl << "-1 - Quit" << endl; 
+        cout << " 1 - Lookup Aiport by Code" << endl << " 2 - List Airports in a State" << endl << " 3 - List Flights Departing from an Airport" << endl << " 4 - List Flights Arriving at an Airport" << endl << " 5 - List Flights to and from Specific Airports " << endl << " 6 - Check if you can fly from one airport to another (DFS)" << endl << " 7 - Check if you can fly from one airport to another (BFS)" << endl << " 8 - Dijkstra (from Airport)" << endl << "-1 - Quit" << endl; 
         cout << "Enter a number: ";
         cin >> input;
         if(input == 1)
@@ -142,6 +144,13 @@ int main(int argc, char* argv[]){
             cin >> code2;
             cout << "---------------------------------------------------------------------" << endl;
             airportData.BFS(code1, code2);
+        }
+        if(input == 8)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "---------------------------------------------------------------------" << endl;
+            airportData.dijkstra(code1);
         }
     }
 }
