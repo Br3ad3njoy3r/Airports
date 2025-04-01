@@ -67,6 +67,7 @@ class flight_graph {
         void BFS(string code, string destination);
         void dijkstra(string code);
         void addAirportsToState(state record);
+        void resetTuples();
         tuple<string, int, bool>* findTuple(string mycode);
     private:
         int portCount;
@@ -141,6 +142,8 @@ port* graph::returnAirport(string code){
     for (char c : code){
         if (current->child[c-'A']==nullptr){
             cout << "Airport: " << code << " not found." << endl;
+            cout << c << endl;
+            return nullptr;
         }
         current=current->child[c-'A'];
     }
@@ -384,6 +387,17 @@ void graph::dijkstra(string code)
             // cout << name << " " << distance << " " << boolalpha << finalized << endl;
             cout << name << " " << distance << endl;
         }
+    }
+    resetTuples();
+}
+
+void graph::resetTuples()
+{
+    for (auto &i : dist) 
+    {
+        //get these values to use in the if statement to decide which vertex to look at next
+        get<1>(i) = 99999;
+        get<2>(i) = 0;
     }
 }
 
