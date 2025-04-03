@@ -81,14 +81,28 @@ int main(int argc, char* argv[]){
     }
     file.close();
 
-    // airportData.dijkstra("LAX", "DEN");
 
-    int input;
+
+    int input, departureTime, var;
     string code1, code2, state;
     while(input != -1)
     {
         cout << "---------------------------------------------------------------------" << endl;
-        cout << " 1 - Lookup Aiport by Code" << endl << " 2 - List Airports in a State" << endl << " 3 - List Flights Departing from an Airport" << endl << " 4 - List Flights Arriving at an Airport" << endl << " 5 - List Flights to and from Specific Airports " << endl << " 6 - Check if you can fly from one airport to another (DFS)" << endl << " 7 - Check if you can fly from one airport to another (BFS)" << endl << " 8 - Dijkstra (from Airport)" << endl << "-1 - Quit" << endl; 
+        cout << " 1  - Lookup Aiport by Code" << endl 
+        << " 2  - List Airports in a State" << endl 
+        << " 3  - List Flights Departing from an Airport" << endl 
+        << " 4  - List Flights Arriving at an Airport" << endl 
+        << " 5  - List Flights to and from Specific Airports " << endl 
+        << " 6  - Check if you can fly from one airport to another (DFS)" << endl 
+        << " 7  - Check if you can fly from one airport to another (BFS)" << endl 
+        << " 8  - Dijkstra (from Airport) minimum flights" << endl 
+        << " 9  - Dijkstra (from Airport) minimum cost" << endl
+        << " 10 - Dijkstra (from Airport) minimum miles" << endl
+        << " 11 - Dijkstra earliest arrival from one airport to another" << endl
+        << " 12 - Dijkstra at most flights " << endl
+        << " 13 - Dijkstra within number of hours" << endl
+        << "-1  - Quit" << endl;
+
         cout << "Enter a number: ";
         cin >> input;
         if(input == 1)
@@ -150,8 +164,76 @@ int main(int argc, char* argv[]){
         {
             cout << "Enter first airport code: ";
             cin >> code1;
-            cout << "---------------------------------------------------------------------" << endl;
-            airportData.dijkstra(code1);
+            cout << "Enter second airport code: ";
+            cin >> code2;
+            airportData.dijkstra(code1, code2);
         }
+        if(input == 9)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter second airport code: ";
+            cin >> code2;
+            airportData.dijkstraCost(code1, code2);
+        }
+        if(input == 10)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter second airport code: ";
+            cin >> code2;
+            airportData.dijkstraMiles(code1, code2);
+        }
+        if(input == 11)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter second airport code: ";
+            cin >> code2;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraEarliestArrival(code1, code2, departureTime);
+        }
+        if(input == 12)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter (at most) how many flights: ";
+            cin >> var;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraAtMostFlights(code1, departureTime, var);
+        }
+        if(input == 12)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter (under) how much money you can spend: ";
+            cin >> var;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraUnderCertainCost(code1, departureTime, var);
+        }
+        if(input == 13)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter how many hours you want to travel: ";
+            cin >> var;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraWithinCertainHours(code1, departureTime, var);
+        }
+
+
     }
+
+    // airportData.dijkstraEarliestArrival("LAX", "DEN", 500);
+    // airportData.dijkstraEarliestArrival("LAX", "JFK", 500);
+
+    // airportData.dijkstraAtMostFlights("LAX", 500, 1);
+
+    // airportData.dijkstraUnderCertainCost("LAX", 100, 355);
+
+    // airportData.dijkstraWithinCertainHours("LAX", 100, 12);
 }
