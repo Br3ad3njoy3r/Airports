@@ -149,6 +149,8 @@ port* graph::returnAirport(string code){
     for (char c : code){
         if (current->child[c-'A']==nullptr){
             cout << "Airport: " << code << " not found." << endl;
+            cout << c << endl;
+            return nullptr;
         }
         current=current->child[c-'A'];
     }
@@ -1033,6 +1035,17 @@ void graph::resetTuple()
         get<3>(i) = "none";
         get<4>(i) = 99999;
 
+    }
+    resetTuples();
+}
+
+void graph::resetTuples()
+{
+    for (auto &i : dist) 
+    {
+        //get these values to use in the if statement to decide which vertex to look at next
+        get<1>(i) = 99999;
+        get<2>(i) = 0;
     }
 }
 
