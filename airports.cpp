@@ -70,15 +70,13 @@ int main(int argc, char* argv[]){
         getline(file, data);
         tmp->ID = data;
 
-        port* tempPort1 = new port();
-        port* tempPort2 = new port();
-        tempPort1 = airportData.returnAirport(tmp->source);
-        tempPort2 = airportData.returnAirport(tmp->destination);
-        if (tempPort1 != nullptr && tempPort2 != nullptr)
-        {
-            tempPort1->departures.push_back(*tmp);
-            tempPort2->arrivals.push_back(*tmp);
-        }
+        port* tempPort = new port();
+        tempPort = airportData.returnAirport(tmp->source);
+        tempPort->departures.push_back(*tmp);
+
+        tempPort = airportData.returnAirport(tmp->destination);
+        tempPort->arrivals.push_back(*tmp);
+    
     }
     file.close();
 
@@ -102,7 +100,6 @@ int main(int argc, char* argv[]){
         << " 11 - Dijkstra earliest arrival from one airport to another" << endl
         << " 12 - Dijkstra at most flights " << endl
         << " 13 - Dijkstra within number of hours" << endl
-        << " 14 - Dijkstra under certain cost" << endl
         << "-1  - Quit" << endl;
 
         cout << "Enter a number: ";
@@ -206,7 +203,7 @@ int main(int argc, char* argv[]){
             cin >> departureTime;
             airportData.dijkstraAtMostFlights(code1, departureTime, var);
         }
-        if(input == 14)
+        if(input == 12)
         {
             cout << "Enter first airport code: ";
             cin >> code1;
