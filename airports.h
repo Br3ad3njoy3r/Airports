@@ -149,7 +149,6 @@ port* graph::returnAirport(string code){
     for (char c : code){
         if (current->child[c-'A']==nullptr){
             cout << "Airport: " << code << " not found." << endl;
-            cout << c << endl;
             return nullptr;
         }
         current=current->child[c-'A'];
@@ -601,10 +600,11 @@ void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
     //look at all of the neigbors of the origin
     for(flight f : tmpPort->departures)
     {
+        auto result = findTuple(f.destination);
+        int arrTime = get<1>(*result);
         //can't take flight if it takes off before you arrive
-        if(f.departure > departureTime)
+        if(f.departure >= departureTime && f.arrival < arrTime)
         {
-            auto result = findTuple(f.destination);
             int time = get<1>(*result) = f.arrival;
             get<3>(*result) = f.source;
             get<4>(*result) = f.cost;
@@ -655,12 +655,13 @@ void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
             auto result = findTuple(f.destination);
             // int time = get<1>(*result);
             int time = get<1>(*index);
+            int arrTime = get<1>(*result);
             int cost = get<4>(*result);
-            if(f.departure > time && cost < curCost+f.cost)
+            if(f.departure > time && f.arrival < arrTime && cost > curCost+f.cost)
             {
                 time = get<1>(*result) = f.arrival;
                 get<3>(*result) = f.source;
-                get<4>(*result) = f.cost;
+                get<4>(*result) = curCost + f.cost;
             }
         }
 
@@ -707,10 +708,11 @@ void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
     //look at all of the neigbors of the origin
     for(flight f : tmpPort->departures)
     {
+        auto result = findTuple(f.destination);
+        int arrTime = get<1>(*result);
         //can't take flight if it takes off before you arrive
-        if(f.departure > departureTime)
+        if(f.departure >= departureTime && f.arrival < arrTime)
         {
-            auto result = findTuple(f.destination);
             int time = get<1>(*result) = f.arrival;
             get<3>(*result) = f.source;
             get<4>(*result) = 1;
@@ -761,8 +763,10 @@ void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
             auto result = findTuple(f.destination);
             // int time = get<1>(*result);
             int time = get<1>(*index);
+            int arrTime = get<1>(*result);
             int distance = get<4>(*result);
-            if(f.departure > time && distance < curDistance+1)
+            if(f.departure > time && f.arrival < arrTime && distance > curDistance+1)
+            // if(f.departure > time && f.arrival < arrTime && distance > curDistance+1)
             {
                 time = get<1>(*result) = f.arrival;
                 get<3>(*result) = f.source;
@@ -782,6 +786,7 @@ void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
     {
         if(distance != 99999)
         {
+            
             if(var <= flights)
             {
                 cout << name << " " << distance << " " << parent << " " << var << endl;
@@ -910,10 +915,11 @@ void graph::dijkstraWithinCertainHours(string source, int departureTime, int hou
     //look at all of the neigbors of the origin
     for(flight f : tmpPort->departures)
     {
+        auto result = findTuple(f.destination);
+        int arrTime = get<1>(*result);
         //can't take flight if it takes off before you arrive
-        if(f.departure > departureTime)
+        if(f.departure >= departureTime && f.arrival < arrTime)
         {
-            auto result = findTuple(f.destination);
             int time = get<1>(*result) = f.arrival;
             get<3>(*result) = f.source;
         }
@@ -960,7 +966,8 @@ void graph::dijkstraWithinCertainHours(string source, int departureTime, int hou
             auto result = findTuple(f.destination);
             // int time = get<1>(*result);
             int time = get<1>(*index);
-            if(f.departure > time)
+            int arrTime = get<1>(*result);
+            if(f.departure > time && f.arrival < arrTime)
             {
                 time = get<1>(*result) = f.arrival;
                 get<3>(*result) = f.source;
@@ -1036,7 +1043,6 @@ void graph::resetTuples()
         get<4>(i) = 99999;
 
     }
-    //resetTuples();
 }
 
 void graph::listAirportsInState(string state)
