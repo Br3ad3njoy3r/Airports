@@ -101,6 +101,7 @@ int main(int argc, char* argv[]){
         << " 11 - Dijkstra earliest arrival from one airport to another" << endl
         << " 12 - Dijkstra at most flights " << endl
         << " 13 - Dijkstra within number of hours" << endl
+        << " 14 - Dijkstra under certain cost" << endl
         << "-1  - Quit" << endl;
 
         cout << "Enter a number: ";
@@ -204,16 +205,6 @@ int main(int argc, char* argv[]){
             cin >> departureTime;
             airportData.dijkstraAtMostFlights(code1, departureTime, var);
         }
-        if(input == 12)
-        {
-            cout << "Enter first airport code: ";
-            cin >> code1;
-            cout << "Enter (under) how much money you can spend: ";
-            cin >> var;
-            cout << "Enter departure time: ";
-            cin >> departureTime;
-            airportData.dijkstraUnderCertainCost(code1, departureTime, var);
-        }
         if(input == 13)
         {
             cout << "Enter first airport code: ";
@@ -223,6 +214,16 @@ int main(int argc, char* argv[]){
             cout << "Enter departure time: ";
             cin >> departureTime;
             airportData.dijkstraWithinCertainHours(code1, departureTime, var);
+        }
+        if(input == 14)
+        {
+            cout << "Enter first airport code: ";
+            cin >> code1;
+            cout << "Enter (under) how much money you can spend: ";
+            cin >> var;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraUnderCertainCost(code1, departureTime, var);
         }
 
 

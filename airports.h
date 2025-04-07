@@ -70,7 +70,7 @@ class flight_graph {
         void dijkstraCost(string code, string destination);
         void dijkstraEarliestArrival(string source, string destination, int departureTime);
         void addAirportsToState(state record);
-        void resetTuple();
+        void resetTuples();
         void printPath(string source, string destination);
         tuple<string, int, bool, string, int>* findTuple(string mycode);
         void dijkstraAtMostFlights(string source, int departureTime, int flights);
@@ -398,7 +398,7 @@ void graph::dijkstraMiles(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstraCost(string code, string destination)
@@ -488,7 +488,7 @@ void graph::dijkstraCost(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstra(string code, string destination)
@@ -579,7 +579,7 @@ void graph::dijkstra(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
@@ -685,7 +685,7 @@ void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
         }
     }
     //printPath(source, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
@@ -791,7 +791,7 @@ void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
         }
     }
     //printPath(source, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstraEarliestArrival(string source, string destination, int departureTime)
@@ -887,7 +887,7 @@ void graph::dijkstraEarliestArrival(string source, string destination, int depar
         }
     }
     printPath(source, destination);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::dijkstraWithinCertainHours(string source, int departureTime, int hours)
@@ -987,7 +987,7 @@ void graph::dijkstraWithinCertainHours(string source, int departureTime, int hou
         }
     }
     //printPath(source);
-    resetTuple();
+    resetTuples();
 }
 
 void graph::printPath(string source, string destination)
@@ -1026,7 +1026,7 @@ void graph::printPath(string source, string destination)
     
 }
 
-void graph::resetTuple()
+void graph::resetTuples()
 {
     for (auto &i : dist) 
     {
@@ -1036,17 +1036,7 @@ void graph::resetTuple()
         get<4>(i) = 99999;
 
     }
-    resetTuples();
-}
-
-void graph::resetTuples()
-{
-    for (auto &i : dist) 
-    {
-        //get these values to use in the if statement to decide which vertex to look at next
-        get<1>(i) = 99999;
-        get<2>(i) = 0;
-    }
+    //resetTuples();
 }
 
 void graph::listAirportsInState(string state)
