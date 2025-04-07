@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
 
 
     int input, departureTime, var;
-    string code1, code2, state;
+    string code1, code2, code3, state;
     while(input != -1)
     {
         cout << "---------------------------------------------------------------------" << endl;
@@ -102,6 +102,9 @@ int main(int argc, char* argv[]){
         << " 12 - Dijkstra at most flights " << endl
         << " 13 - Dijkstra within number of hours" << endl
         << " 14 - Dijkstra under certain cost" << endl
+        << " 15 - Dijkstra fewest flights stopping at a middle airport" << endl
+        << " 16 - Dijkstra cheapest trip stopping at a middle airport" << endl
+        << " 17 - Dijkstra earliest arrival stopping at a middle airport" << endl
         << "-1  - Quit" << endl;
 
         cout << "Enter a number: ";
@@ -225,16 +228,52 @@ int main(int argc, char* argv[]){
             cin >> departureTime;
             airportData.dijkstraUnderCertainCost(code1, departureTime, var);
         }
-
-
+        if(input == 15)
+        {
+            cout << "Enter source airport code: ";
+            cin >> code1;
+            cout << "Enter destination airport code: ";
+            cin >> code2;
+            cout << "Enter middle airport code: ";
+            cin >> code3;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraFewestFlightsMiddle(code1, code2, code3, departureTime);
+        }
+        if(input == 16)
+        {
+            cout << "Enter source airport code: ";
+            cin >> code1;
+            cout << "Enter destination airport code: ";
+            cin >> code2;
+            cout << "Enter middle airport code: ";
+            cin >> code3;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraCheapestTripMiddle(code1, code2, code3, departureTime);
+        }
+        if(input == 17)
+        {
+            cout << "Enter source airport code: ";
+            cin >> code1;
+            cout << "Enter destination airport code: ";
+            cin >> code2;
+            cout << "Enter middle airport code: ";
+            cin >> code3;
+            cout << "Enter departure time: ";
+            cin >> departureTime;
+            airportData.dijkstraEarliestArrivalMiddle(code1, code2, code3, departureTime);
+        }
     }
 
-    // airportData.dijkstraEarliestArrival("LAX", "DEN", 500);
-    // airportData.dijkstraEarliestArrival("LAX", "JFK", 500);
+    // airportData.dijkstraEarliestArrivalMiddle("SAN", "SLC", "BWI", 530);
+    // airportData.dijkstraEarliestArrivalMiddle("LAS", "LGA", "MSP", 930);
+    // airportData.dijkstraEarliestArrivalMiddle("LAS", "LGA", "DTW", 33);
 
-    // airportData.dijkstraAtMostFlights("LAX", 500, 1);
+    // airportData.dijkstraCheapestTripMiddle("SAN", "SLC", "BWI", 530);
+    // airportData.dijkstraCheapestTripMiddle("LAS", "LGA", "PHL", 330);
 
-    // airportData.dijkstraUnderCertainCost("LAX", 100, 355);
-
-    // airportData.dijkstraWithinCertainHours("LAX", 100, 12);
+    // airportData.dijkstraFewestFlightsMiddle("ATL", "ORD", "JFK", 530);
+    // airportData.dijkstraFewestFlightsMiddle("LAS", "LGA", "MSP", 330);
+    // airportData.dijkstraFewestFlightsMiddle("LAS", "LGA", "DTW", 330);
 }
