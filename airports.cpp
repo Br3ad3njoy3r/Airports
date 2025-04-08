@@ -40,6 +40,7 @@ int main(int argc, char* argv[]){
 
         airportData.Add(portTmp);
         airportData.addAirportsToState(stateTmp);
+        
     }
     file.close();
 
