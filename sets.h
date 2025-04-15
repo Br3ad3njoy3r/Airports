@@ -9,20 +9,10 @@ class sets {
     public:
         sets();
         sets(vector<int> list);
-        //print cout << 'our set';
-        //isIN a^S (S is our set, a is an int)
-        //add S+=a 
-        //* intersection
-        //+ Union
-        //- Difference
-        //< proper subset
-        //<= subset
-        //isEmpty !S true if empty
-        //subset
     private:
         vector<int> set;
 
-    friend ostream & operator<<(ostream &out, const sets &obj)
+    friend ostream & operator<<(ostream &out, const sets &obj) //printing
     {
         out << "The set contains: ";
         for(int n : obj.set)
@@ -33,7 +23,7 @@ class sets {
         return out;
     }
 
-    friend bool operator^(sets &x, int y)
+    friend bool operator^(sets &x, int y) //isIn
     {
         for(int n: x.set)
         {
@@ -46,7 +36,7 @@ class sets {
         return false;
     }
 
-    friend void operator+=(sets &x, int y)
+    friend void operator+=(sets &x, int y) // addition
     {
         for(int n: x.set)
         {
@@ -58,7 +48,7 @@ class sets {
         x.set.push_back(y);
     }
 
-    friend sets operator*(sets &x, sets &y)
+    friend sets operator*(sets &x, sets &y) //intersection
     {
         sets res;
 
@@ -76,7 +66,7 @@ class sets {
         return res;
     }
 
-    friend sets operator+(sets &x, sets &y)
+    friend sets operator+(sets &x, sets &y) //union
     {
         sets res;
 
@@ -93,7 +83,7 @@ class sets {
         return res;
     }
 
-    friend sets operator-(sets &x, sets &y)
+    friend sets operator-(sets &x, sets &y) //difference
     {
         sets res;
 
@@ -117,7 +107,7 @@ class sets {
         return res;
     }
 
-    friend bool operator<(sets &x, sets &y)
+    friend bool operator<(sets &x, sets &y) //proper subset
     {
         for(int n: x.set)
         {
@@ -149,7 +139,7 @@ class sets {
         return false;
     }
 
-    friend bool operator<=(sets &x, sets &y)
+    friend bool operator<=(sets &x, sets &y) //subset
     {
         for(int n: x.set)
         {
@@ -171,7 +161,7 @@ class sets {
         return true;
     }
 
-    friend bool operator!(sets &x)
+    friend bool operator!(sets &x) //isEmpty
     {
         int size = x.set.size();
 

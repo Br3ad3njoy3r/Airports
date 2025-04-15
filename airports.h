@@ -51,35 +51,6 @@ struct trieNode {
     }
 };
 
-//set class and associated methods
-class sets {
-    public:
-        sets();
-        sets(vector<int> list);
-        //print cout << 'our set';
-        //isIN a^S (S is our set, a is an int)
-        //add S+=a 
-        //* intersection
-        //+ Union
-        //- Difference
-        //< proper subset
-        //<= subset
-        //isEmpty !S true if empty
-        //subset
-    private:
-        vector<int> set;
-};
-
-sets::sets()
-{
-
-}
-
-sets::sets(vector<int> list)
-{
-
-}
-
 
 
 //flights class and associated methods
