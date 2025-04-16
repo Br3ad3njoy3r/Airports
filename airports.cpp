@@ -1,4 +1,5 @@
 #include "airports.h"
+#include "sets.h"
 
 int main(int argc, char* argv[]){
     ifstream file;
@@ -40,6 +41,7 @@ int main(int argc, char* argv[]){
 
         airportData.Add(portTmp);
         airportData.addAirportsToState(stateTmp);
+        
     }
     file.close();
 

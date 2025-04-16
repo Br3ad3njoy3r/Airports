@@ -122,6 +122,7 @@ void graph::Add(port* record){
         portCount++;
         current->endKey=true;
     }
+    lookUpTable.push_back(record->code);
 }
 
 int hashFunciton(string name){
