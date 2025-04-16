@@ -19,6 +19,7 @@ class sets {
         //<= subset
         //isEmpty !S true if empty
         //subset
+        int size();
     private:
         vector<int> set;
 
@@ -33,7 +34,7 @@ class sets {
         return out;
     }
 
-    friend bool operator^(sets &x, int y)
+    friend bool operator^(int y, sets &x)
     {
         for(int n: x.set)
         {
@@ -192,4 +193,9 @@ sets::sets()
 sets::sets(vector<int> list)
 {
     set = list;
+}
+
+int sets::size()
+{
+    return set.size();
 }

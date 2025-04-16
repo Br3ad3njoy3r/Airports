@@ -7,6 +7,7 @@
 #include <stack>
 #include <tuple>
 #include <utility>
+#include "sets.h"
 using namespace std;
 
 struct flights {
@@ -53,6 +54,7 @@ struct trieNode {
 
 
 
+//flights class and associated methods
 class flight_graph {
     public:
         flight_graph();
@@ -71,7 +73,7 @@ class flight_graph {
         void dijkstraCost(string code, string destination);
         int dijkstraEarliestArrival(string source, string destination, int departureTime);
         void addAirportsToState(state record);
-        void resetTuples();
+        void resetTuple();
         void printPath(string source, string destination);
         tuple<string, int, bool, string, int>* findTuple(string mycode);
         void dijkstraAtMostFlights(string source, int departureTime, int flights);
@@ -82,11 +84,15 @@ class flight_graph {
         void dijkstraCheapestTripMiddle(string source, string destination, string middle, int departureTime);
         pair<int, int> dijkstraFewestFlights(string code, string destination, int departureTime);
         void dijkstraFewestFlightsMiddle(string source, string destination, string middle, int departureTime);
+        void prim(string startCode, vector<int> subset);
+        int returnAirportNumber(string code);
+        string returnAirportName(int num);
     private:
         int portCount;
         trieNode* trieTable;
         vector<state> states[50];
         vector<tuple<string, int, bool, string, int>> dist;
+        vector<string> airports;
 };
 
 using graph = flight_graph;
@@ -112,6 +118,7 @@ void graph::Add(port* record){
         current->airport=record;
         tuple tmpTuple = make_tuple(record->code, 99999, 0, "none", 99999);
         dist.push_back(tmpTuple);
+        airports.push_back(record->code);
         portCount++;
         current->endKey=true;
     }
@@ -163,7 +170,7 @@ port* graph::returnAirport(string code){
         return current->airport;
     } else {
         cout << "Airport: " << code << " not found." << endl;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -403,7 +410,7 @@ void graph::dijkstraMiles(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuples();
+    resetTuple();
 }
 
 void graph::dijkstraCost(string code, string destination)
@@ -493,7 +500,7 @@ void graph::dijkstraCost(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuples();
+    resetTuple();
 }
 
 void graph::dijkstra(string code, string destination)
@@ -584,7 +591,7 @@ void graph::dijkstra(string code, string destination)
         }
     }
     printPath(code, destination);
-    resetTuples();
+    resetTuple();
 }
 
 void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
@@ -692,7 +699,7 @@ void graph::dijkstraUnderCertainCost(string source, int departureTime, int cost)
         }
     }
     //printPath(source, destination);
-    resetTuples();
+    resetTuple();
 }
 
 void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
@@ -802,7 +809,7 @@ void graph::dijkstraAtMostFlights(string source, int departureTime, int flights)
         }
     }
     //printPath(source, destination);
-    resetTuples();
+    resetTuple();
 }
 
 int graph::dijkstraEarliestArrival(string source, string destination, int departureTime)
@@ -1004,7 +1011,7 @@ void graph::dijkstraWithinCertainHours(string source, int departureTime, int hou
         }
     }
     //printPath(source);
-    resetTuples();
+    resetTuple();
 }
 
 void graph::printPath(string source, string destination)
@@ -1048,8 +1055,6 @@ void graph::dijkstraEarliestArrivalMiddle(string source, string destination, str
     int time = dijkstraEarliestArrival(source, middle, departureTime);
     int totalTime = dijkstraEarliestArrival(middle, destination, time);
     cout << "Final destination time: " << totalTime << endl;
-
-
 }
 
 pair<int, int> graph::dijkstraCheapestTrip(string code, string destination, int departureTime)
@@ -1310,276 +1315,7 @@ void graph::dijkstraFewestFlightsMiddle(string source, string destination, strin
 
 }
 
-
-void graph::dijkstraEarliestArrivalMiddle(string source, string destination, string middle, int departureTime)
-{
-    int time = dijkstraEarliestArrival(source, middle, departureTime);
-    int totalTime = dijkstraEarliestArrival(middle, destination, time);
-    cout << "Final destination time: " << totalTime << endl;
-
-
-}
-
-pair<int, int> graph::dijkstraCheapestTrip(string code, string destination, int departureTime)
-{
-    //find the tuple for the origin, set it's distance to 0, since its the root node. 
-    int finalizedNodes = 0;
-    auto result = findTuple(code);
-    get<1>(*result) = departureTime;
-    get<2>(*result) = 1;
-    get<3>(*result) = "Origin";
-
-    //get the current code to get the port's information
-    string current = get<0>(*result);
-
-    //get the current port's information
-    port *tmpPort = new port();
-    tmpPort = returnAirport(code);
-
-    //look at all of the neigbors of the origin
-    for(flight f : tmpPort->departures)
-    {
-        auto result = findTuple(f.destination);
-        // int distance = get<1>(*result) = f.cost;
-        int arrTime = get<1>(*result);
-        if(f.departure >= departureTime && f.arrival < arrTime)
-        {
-            int time = get<1>(*result) = f.arrival;
-            get<3>(*result) = f.source;
-            get<4>(*result) = f.cost;
-        }
-
-    }
-    //increment finalizedNodes, although it really doesn't serve much of a purpose if not all airports are accessible from the origin
-    finalizedNodes++;
-
-    //while condition to run dijkstra until all vertices are finalized
-    while(finalizedNodes < portCount)
-    {
-        //init as a null pointer, we'll update it when we find what we need
-        tuple<string, int, bool, string, int>* index = nullptr;
-        //initialize the starting distance to something high, try to find the lowest distance to go to next
-        int curTime = 99999;
-        int curCost = 99999;
-        //find the smallest non-finalized vertex and pick it.
-        for (auto &i : dist) 
-        {
-            //get these values to use in the if statement to decide which vertex to look at next
-            int cost = get<4>(i);
-            int time = get<1>(i);
-            bool finalized = get<2>(i);
-            if(time < curTime && cost < curCost && finalized == false)
-            {
-                curTime = time;
-                curCost = cost;
-                index = &i;
-            }
-        }
-
-        //this only hits if there's no more airports that haven't been finalized that can be reached. 
-        if (index == nullptr) 
-        {
-            cout << "No more non-finalized nodes found. Stopping." << endl;
-            break; 
-        }
-
-        //cout << get<0>(*index) << " " << get<1>(*index) << " " << boolalpha << get<2>(*index) << endl;
-        string mycode = get<0>(*index);
-        tmpPort = returnAirport(mycode);
-
-        //look at all of the neigbors of the origin
-        for(flight f : tmpPort->departures)
-        {
-            // cout << f.destination << endl;
-            auto result = findTuple(f.destination);
-            int time = get<1>(*index);
-            int arrTime = get<1>(*result);
-            int cost = get<4>(*result);
-            if(f.departure > time && f.arrival < arrTime && cost > curCost+f.cost)
-            {
-                time = get<1>(*result) = f.arrival;
-                cost = get<4>(*result) = curCost+f.cost;
-                get<3>(*result) = f.source;
-            }
-        }
-
-        get<2>(*index) = 1;
-        //cout << get<2>(*index);
-        finalizedNodes++;
-    }
-
-    cout << "Shortest Cost from airport to destination." << endl;
-    
-    //output the information in the vector of tuples.
-    for (const auto [name, distance, finalized, parent, var] : dist) 
-    {
-        if(distance != 99999)
-        {
-            // cout << name << " " << distance << " " << boolalpha << finalized << endl;
-            cout << name << " time: " << distance << " cost: " << var << endl;
-        }
-    }
-    printPath(code, destination);
-
-    auto end = findTuple(destination);
-    int time = get<1>(*end);
-    int cost = get<4>(*end);
-
-    pair<int, int> total;
-    total.first = time;
-    total.second = cost;
-    resetTuple();
-
-    return total;
-}
-
-pair<int, int> graph::dijkstraFewestFlights(string code, string destination, int departureTime)
-{
-    //find the tuple for the origin, set it's distance to 0, since its the root node. 
-    int finalizedNodes = 0;
-    auto result = findTuple(code);
-    get<1>(*result) = departureTime;
-    get<2>(*result) = 1;
-    get<3>(*result) = "Origin";
-
-    //get the current code to get the port's information
-    string current = get<0>(*result);
-
-    //get the current port's information
-    port *tmpPort = new port();
-    tmpPort = returnAirport(code);
-
-    //look at all of the neigbors of the origin
-    for(flight f : tmpPort->departures)
-    {
-        auto result = findTuple(f.destination);
-        // int distance = get<1>(*result) = f.cost;
-        int arrTime = get<1>(*result);
-        if(f.departure >= departureTime && f.arrival < arrTime)
-        {
-            int time = get<1>(*result) = f.arrival;
-            get<3>(*result) = f.source;
-            get<4>(*result) = 1;
-        }
-
-    }
-    //increment finalizedNodes, although it really doesn't serve much of a purpose if not all airports are accessible from the origin
-    finalizedNodes++;
-
-    //while condition to run dijkstra until all vertices are finalized
-    while(finalizedNodes < portCount)
-    {
-        //init as a null pointer, we'll update it when we find what we need
-        tuple<string, int, bool, string, int>* index = nullptr;
-        //initialize the starting distance to something high, try to find the lowest distance to go to next
-        int curTime = 99999;
-        int curCost = 99999;
-        //find the smallest non-finalized vertex and pick it.
-        for (auto &i : dist) 
-        {
-            //get these values to use in the if statement to decide which vertex to look at next
-            int cost = get<4>(i);
-            int time = get<1>(i);
-            bool finalized = get<2>(i);
-            if(time < curTime && cost < curCost && finalized == false)
-            {
-                curTime = time;
-                curCost = cost;
-                index = &i;
-            }
-        }
-
-        //this only hits if there's no more airports that haven't been finalized that can be reached. 
-        if (index == nullptr) 
-        {
-            cout << "No more non-finalized nodes found. Stopping." << endl;
-            break; 
-        }
-
-        //cout << get<0>(*index) << " " << get<1>(*index) << " " << boolalpha << get<2>(*index) << endl;
-        string mycode = get<0>(*index);
-        tmpPort = returnAirport(mycode);
-
-        //look at all of the neigbors of the origin
-        for(flight f : tmpPort->departures)
-        {
-            // cout << f.destination << endl;
-            auto result = findTuple(f.destination);
-            int time = get<1>(*index);
-            int arrTime = get<1>(*result);
-            int cost = get<4>(*result);
-            if(f.departure > time && f.arrival < arrTime && cost > curCost+1)
-            {
-                time = get<1>(*result) = f.arrival;
-                cost = get<4>(*result) = curCost+1;
-                get<3>(*result) = f.source;
-            }
-        }
-
-        get<2>(*index) = 1;
-        //cout << get<2>(*index);
-        finalizedNodes++;
-    }
-
-    cout << "Shortest Cost from airport to destination." << endl;
-    
-    //output the information in the vector of tuples.
-    for (const auto [name, distance, finalized, parent, var] : dist) 
-    {
-        if(distance != 99999)
-        {
-            // cout << name << " " << distance << " " << boolalpha << finalized << endl;
-            cout << name << " time: " << distance << " cost: " << var << endl;
-        }
-    }
-    printPath(code, destination);
-
-    auto end = findTuple(destination);
-    int time = get<1>(*end);
-    int flights = get<4>(*end);
-
-    pair<int, int> total;
-    total.first = time;
-    total.second = flights;
-
-    resetTuple();
-
-    return total;
-}
-
-void graph::dijkstraCheapestTripMiddle(string source, string destination, string middle, int departureTime)
-{
-    pair<int, int> total;
-    int cost=0;
-    total = dijkstraCheapestTrip(source, middle, departureTime);
-
-    cost += total.second;
-
-    total = dijkstraCheapestTrip(middle, destination, total.first);
-
-    cost += total.second;
-    cout << "Total cost: " << cost << endl;
-    resetTuple();
-}
-
-void graph::dijkstraFewestFlightsMiddle(string source, string destination, string middle, int departureTime)
-{
-    int flights = 0;
-    pair<int, int> total;
-    total = dijkstraFewestFlights(source, middle, departureTime);
-
-    flights += total.second;
-
-    total = dijkstraFewestFlights(middle, destination, total.first);
-
-    flights += total.second;
-
-    cout << "Number of flights: " << flights << endl;
-
-}
-
-
-void graph::resetTuples()
+void graph::resetTuple()
 {
     for (auto &i : dist) 
     {
@@ -1602,4 +1338,141 @@ void graph::listAirportsInState(string state)
         }
     }
     cout << "# of Airports in " << state << ": " << counter << endl;
+}
+
+int graph::returnAirportNumber(string code)
+{
+    auto it = find(airports.begin(), airports.end(), code);
+
+    if(it != airports.end())
+    {
+        int index = distance(airports.begin(), it);
+        // cout << code << " found at index: " << index << endl;
+        return index;
+    }
+    else
+    {
+        // cout << "Element not found in the vector" << endl;
+        return -1;
+    }
+}
+
+string graph::returnAirportName(int num)
+{
+    string name = airports[num];
+    //cout << name << endl;
+    return name;
+}
+
+void graph::prim(string startCode, vector<int> subset)
+{
+    int totalCost = 0;
+    vector<flight> flightsTaken;
+    sets primSet;
+    primSet += returnAirportNumber(startCode);
+    cout << primSet << endl;
+
+    while(primSet.size() < subset.size())
+    {
+        flight tmpFlight;
+        int cheapestFlight = 99999;
+        //first, find the shortest cost flight that either takes off from or arrives at startCode
+        for(int a : subset) //for every object in the set
+        {
+            string name;
+            name = returnAirportName(a);
+            port *tmpPort = new port();
+            tmpPort = returnAirport(name);
+            if(returnAirportNumber(name) ^ primSet) //if airport is in set
+            {
+                //look at departures to any destinations not in set
+                for(flight f: tmpPort->departures)
+                {
+                    bool inSet = returnAirportNumber(f.destination) ^ primSet;
+                    if(inSet == false)
+                    {
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                }
+
+                for(flight f: tmpPort->arrivals)
+                {
+                    bool inSet = returnAirportNumber(f.source) ^ primSet;
+                    if(inSet == false)
+                    {
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                }
+            }
+            else // airport not in set
+            {
+                //look at arrivals to any destinations in set 
+                for(flight f: tmpPort->arrivals)
+                {
+                    bool inSet = returnAirportNumber(f.source) ^ primSet;
+                    if(inSet == true)
+                    {   
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                } 
+                for(flight f: tmpPort->departures)
+                {
+                    bool inSet = returnAirportNumber(f.destination) ^ primSet;
+                    if(inSet == true)
+                    {   
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;                    
+                        }
+                    }
+                } 
+            }
+        }
+
+        if(cheapestFlight == 99999)
+        {
+            cout << "No more valid flights were found. " << endl;
+            for(flight f: flightsTaken)
+            {
+                cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << endl;
+            }
+
+            cout << "TOTAL COST: " << totalCost << endl;
+            return;
+        }
+
+        //find cheapest flight in total, add that to the set.
+        flightsTaken.push_back(tmpFlight);
+        totalCost += tmpFlight.cost;
+        if(returnAirportNumber(tmpFlight.source) ^ primSet) //if source is in set, then add the destination
+        {
+            primSet += returnAirportNumber(tmpFlight.destination);
+        }
+        else //otherwise, the destination is in the set, so add the source
+        {
+            primSet += returnAirportNumber(tmpFlight.source);
+        }
+    }
+    
+    cout << primSet << endl;
+
+    for(flight f: flightsTaken)
+    {
+        cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << endl;
+    }
+
+    cout << "TOTAL COST: " << totalCost << endl;
 }
