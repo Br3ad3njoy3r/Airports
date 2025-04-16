@@ -7,6 +7,7 @@
 #include <stack>
 #include <tuple>
 #include <utility>
+#include "sets.h"
 using namespace std;
 
 struct flights {
@@ -83,12 +84,15 @@ class flight_graph {
         void dijkstraCheapestTripMiddle(string source, string destination, string middle, int departureTime);
         pair<int, int> dijkstraFewestFlights(string code, string destination, int departureTime);
         void dijkstraFewestFlightsMiddle(string source, string destination, string middle, int departureTime);
+        void prim(string startCode, vector<int> subset);
+        int returnAirportNumber(string code);
+        string returnAirportName(int num);
     private:
         int portCount;
         trieNode* trieTable;
         vector<state> states[50];
         vector<tuple<string, int, bool, string, int>> dist;
-        vector<string> lookUpTable;
+        vector<string> airports;
 };
 
 using graph = flight_graph;
@@ -114,6 +118,7 @@ void graph::Add(port* record){
         current->airport=record;
         tuple tmpTuple = make_tuple(record->code, 99999, 0, "none", 99999);
         dist.push_back(tmpTuple);
+        airports.push_back(record->code);
         portCount++;
         current->endKey=true;
     }
@@ -1311,10 +1316,6 @@ void graph::dijkstraFewestFlightsMiddle(string source, string destination, strin
 
 }
 
-
-
-
-
 void graph::resetTuple()
 {
     for (auto &i : dist) 
@@ -1338,4 +1339,141 @@ void graph::listAirportsInState(string state)
         }
     }
     cout << "# of Airports in " << state << ": " << counter << endl;
+}
+
+int graph::returnAirportNumber(string code)
+{
+    auto it = find(airports.begin(), airports.end(), code);
+
+    if(it != airports.end())
+    {
+        int index = distance(airports.begin(), it);
+        // cout << code << " found at index: " << index << endl;
+        return index;
+    }
+    else
+    {
+        // cout << "Element not found in the vector" << endl;
+        return -1;
+    }
+}
+
+string graph::returnAirportName(int num)
+{
+    string name = airports[num];
+    //cout << name << endl;
+    return name;
+}
+
+void graph::prim(string startCode, vector<int> subset)
+{
+    int totalCost = 0;
+    vector<flight> flightsTaken;
+    sets primSet;
+    primSet += returnAirportNumber(startCode);
+    cout << primSet << endl;
+
+    while(primSet.size() < subset.size())
+    {
+        flight tmpFlight;
+        int cheapestFlight = 99999;
+        //first, find the shortest cost flight that either takes off from or arrives at startCode
+        for(int a : subset) //for every object in the set
+        {
+            string name;
+            name = returnAirportName(a);
+            port *tmpPort = new port();
+            tmpPort = returnAirport(name);
+            if(returnAirportNumber(name) ^ primSet) //if airport is in set
+            {
+                //look at departures to any destinations not in set
+                for(flight f: tmpPort->departures)
+                {
+                    bool inSet = returnAirportNumber(f.destination) ^ primSet;
+                    if(inSet == false)
+                    {
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                }
+
+                for(flight f: tmpPort->arrivals)
+                {
+                    bool inSet = returnAirportNumber(f.source) ^ primSet;
+                    if(inSet == false)
+                    {
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                }
+            }
+            else // airport not in set
+            {
+                //look at arrivals to any destinations in set 
+                for(flight f: tmpPort->arrivals)
+                {
+                    bool inSet = returnAirportNumber(f.source) ^ primSet;
+                    if(inSet == true)
+                    {   
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;
+                        }
+                    }
+                } 
+                for(flight f: tmpPort->departures)
+                {
+                    bool inSet = returnAirportNumber(f.destination) ^ primSet;
+                    if(inSet == true)
+                    {   
+                        if(f.cost < cheapestFlight)
+                        {
+                            tmpFlight = f;
+                            cheapestFlight = f.cost;                    
+                        }
+                    }
+                } 
+            }
+        }
+
+        if(cheapestFlight == 99999)
+        {
+            cout << "No more valid flights were found. " << endl;
+            for(flight f: flightsTaken)
+            {
+                cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << endl;
+            }
+
+            cout << "TOTAL COST: " << totalCost << endl;
+            return;
+        }
+
+        //find cheapest flight in total, add that to the set.
+        flightsTaken.push_back(tmpFlight);
+        totalCost += tmpFlight.cost;
+        if(returnAirportNumber(tmpFlight.source) ^ primSet) //if source is in set, then add the destination
+        {
+            primSet += returnAirportNumber(tmpFlight.destination);
+        }
+        else //otherwise, the destination is in the set, so add the source
+        {
+            primSet += returnAirportNumber(tmpFlight.source);
+        }
+    }
+    
+    cout << primSet << endl;
+
+    for(flight f: flightsTaken)
+    {
+        cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << endl;
+    }
+
+    cout << "TOTAL COST: " << totalCost << endl;
 }

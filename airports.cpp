@@ -268,14 +268,41 @@ int main(int argc, char* argv[]){
         }
     }
 
-    // airportData.dijkstraEarliestArrivalMiddle("SAN", "SLC", "BWI", 530);
-    // airportData.dijkstraEarliestArrivalMiddle("LAS", "LGA", "MSP", 930);
-    // airportData.dijkstraEarliestArrivalMiddle("LAS", "LGA", "DTW", 33);
+    //These lines are for a tmpPorts/tmpFlights, the ones uncommented are for the ak_... files. 
+    // vector<int> s = {airportData.returnAirportNumber("ABQ"), airportData.returnAirportNumber("ANC"), airportData.returnAirportNumber("ATL"), airportData.returnAirportNumber("AUS"), airportData.returnAirportNumber("BHM"), airportData.returnAirportNumber("BUR") };
+    //vector<int> s = {airportData.returnAirportNumber("ABQ"), airportData.returnAirportNumber("ATL"), airportData.returnAirportNumber("AUS"), airportData.returnAirportNumber("BHM"), airportData.returnAirportNumber("BUR") };
 
-    // airportData.dijkstraCheapestTripMiddle("SAN", "SLC", "BWI", 530);
-    // airportData.dijkstraCheapestTripMiddle("LAS", "LGA", "PHL", 330);
+    //airportData.prim("ABQ", s);
+    // airportData.prim("ABQ", s);
+    // airportData.prim("ATL", s);
+    // airportData.prim("AUS", s);
+    // airportData.prim("ANC", s);
+    // airportData.prim("BHM", s);
+    // airportData.prim("BUR", s);
 
-    // airportData.dijkstraFewestFlightsMiddle("ATL", "ORD", "JFK", 530);
-    // airportData.dijkstraFewestFlightsMiddle("LAS", "LGA", "MSP", 330);
-    // airportData.dijkstraFewestFlightsMiddle("LAS", "LGA", "DTW", 330);
+
+    vector<int> s = {
+        airportData.returnAirportNumber("ATL"),
+        airportData.returnAirportNumber("JFK"),
+        airportData.returnAirportNumber("ORD"),
+        airportData.returnAirportNumber("DFW"),
+        airportData.returnAirportNumber("LAX"),
+        airportData.returnAirportNumber("MIA"),
+        airportData.returnAirportNumber("ABQ"),
+        airportData.returnAirportNumber("ANC"),
+        airportData.returnAirportNumber("AUS"),
+        airportData.returnAirportNumber("BDL"),
+        airportData.returnAirportNumber("STL")
+    };
+
+    airportData.prim("ATL", s);
+    airportData.prim("JFK", s);
+    airportData.prim("ORD", s);
+    airportData.prim("DFW", s);
+    airportData.prim("LAX", s);
+    airportData.prim("MIA", s);
+    airportData.prim("ABQ", s);
+    airportData.prim("ANC", s);
+    airportData.prim("AUS", s);
+    airportData.prim("BDL", s);
 }

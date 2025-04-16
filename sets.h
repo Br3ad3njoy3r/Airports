@@ -9,6 +9,7 @@ class sets {
     public:
         sets();
         sets(vector<int> list);
+        int size();
     private:
         vector<int> set;
 
@@ -23,7 +24,7 @@ class sets {
         return out;
     }
 
-    friend bool operator^(sets &x, int y) //isIn
+    friend bool operator^(int y, sets &x)
     {
         for(int n: x.set)
         {
@@ -182,4 +183,9 @@ sets::sets()
 sets::sets(vector<int> list)
 {
     set = list;
+}
+
+int sets::size()
+{
+    return set.size();
 }
