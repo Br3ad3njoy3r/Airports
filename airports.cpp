@@ -267,41 +267,16 @@ int main(int argc, char* argv[]){
         }
     }
 
-    //These lines are for a tmpPorts/tmpFlights, the ones uncommented are for the ak_... files. 
-    // vector<int> s = {airportData.returnAirportNumber("ABQ"), airportData.returnAirportNumber("ANC"), airportData.returnAirportNumber("ATL"), airportData.returnAirportNumber("AUS"), airportData.returnAirportNumber("BHM"), airportData.returnAirportNumber("BUR") };
-    //vector<int> s = {airportData.returnAirportNumber("ABQ"), airportData.returnAirportNumber("ATL"), airportData.returnAirportNumber("AUS"), airportData.returnAirportNumber("BHM"), airportData.returnAirportNumber("BUR") };
+    // vector<int> quizm = {airportData.returnAirportNumber("LAX"), airportData.returnAirportNumber("BOS"), airportData.returnAirportNumber("SEA"), airportData.returnAirportNumber("DEN"), airportData.returnAirportNumber("MIA")};
+    // airportData.prim("LAX", quizm);
 
-    //airportData.prim("ABQ", s);
-    // airportData.prim("ABQ", s);
-    // airportData.prim("ATL", s);
-    // airportData.prim("AUS", s);
-    // airportData.prim("ANC", s);
-    // airportData.prim("BHM", s);
-    // airportData.prim("BUR", s);
+    // vector<int> quizn = {airportData.returnAirportNumber("DEN"), airportData.returnAirportNumber("LAX"), airportData.returnAirportNumber("MIA"), airportData.returnAirportNumber("JFK"), airportData.returnAirportNumber("SEA"), airportData.returnAirportNumber("SFO"), airportData.returnAirportNumber("BOS")};
+    // airportData.prim("DEN", quizn);
+    // airportData.prim("SFO", quizn);
 
+    vector<int> quizn2 = {airportData.returnAirportNumber("DEN"), airportData.returnAirportNumber("LAX"), airportData.returnAirportNumber("MIA"), airportData.returnAirportNumber("JFK"), airportData.returnAirportNumber("SEA"), airportData.returnAirportNumber("SFO")};
+    airportData.prim("SFO", quizn2);
 
-    vector<int> s = {
-        airportData.returnAirportNumber("ATL"),
-        airportData.returnAirportNumber("JFK"),
-        airportData.returnAirportNumber("ORD"),
-        airportData.returnAirportNumber("DFW"),
-        airportData.returnAirportNumber("LAX"),
-        airportData.returnAirportNumber("MIA"),
-        airportData.returnAirportNumber("ABQ"),
-        airportData.returnAirportNumber("ANC"),
-        airportData.returnAirportNumber("AUS"),
-        airportData.returnAirportNumber("BDL"),
-        airportData.returnAirportNumber("STL")
-    };
-
-    airportData.prim("ATL", s);
-    airportData.prim("JFK", s);
-    airportData.prim("ORD", s);
-    airportData.prim("DFW", s);
-    airportData.prim("LAX", s);
-    airportData.prim("MIA", s);
-    airportData.prim("ABQ", s);
-    airportData.prim("ANC", s);
-    airportData.prim("AUS", s);
-    airportData.prim("BDL", s);
+    vector<int> quizn3 = {airportData.returnAirportNumber("DEN"), airportData.returnAirportNumber("LAX"), airportData.returnAirportNumber("MIA"), airportData.returnAirportNumber("JFK"), airportData.returnAirportNumber("BOS"), airportData.returnAirportNumber("SFO")};
+    airportData.prim("SFO", quizn3);
 }
