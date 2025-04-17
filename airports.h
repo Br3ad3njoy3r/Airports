@@ -1367,6 +1367,10 @@ string graph::returnAirportName(int num)
 
 void graph::prim(string startCode, vector<int> subset)
 {
+    sets subsetset;
+    for (int i : subset){
+        subsetset+=i;
+    }
     int totalCost = 0;
     vector<flight> flightsTaken;
     sets primSet;
@@ -1390,7 +1394,7 @@ void graph::prim(string startCode, vector<int> subset)
                 for(flight f: tmpPort->departures)
                 {
                     bool inSet = returnAirportNumber(f.destination) ^ primSet;
-                    if(inSet == false)
+                    if(inSet == false && returnAirportNumber(f.destination)^subsetset)
                     {
                         if(f.cost < cheapestFlight)
                         {
@@ -1400,18 +1404,18 @@ void graph::prim(string startCode, vector<int> subset)
                     }
                 }
 
-                for(flight f: tmpPort->arrivals)
-                {
-                    bool inSet = returnAirportNumber(f.source) ^ primSet;
-                    if(inSet == false)
-                    {
-                        if(f.cost < cheapestFlight)
-                        {
-                            tmpFlight = f;
-                            cheapestFlight = f.cost;
-                        }
-                    }
-                }
+                // for(flight f: tmpPort->arrivals)
+                // {
+                //     bool inSet = returnAirportNumber(f.source) ^ primSet;
+                //     if(inSet == false)
+                //     {
+                //         if(f.cost < cheapestFlight)
+                //         {
+                //             tmpFlight = f;
+                //             cheapestFlight = f.cost;
+                //         }
+                //     }
+                // }
             }
             else // airport not in set
             {
@@ -1428,24 +1432,25 @@ void graph::prim(string startCode, vector<int> subset)
                         }
                     }
                 } 
-                for(flight f: tmpPort->departures)
-                {
-                    bool inSet = returnAirportNumber(f.destination) ^ primSet;
-                    if(inSet == true)
-                    {   
-                        if(f.cost < cheapestFlight)
-                        {
-                            tmpFlight = f;
-                            cheapestFlight = f.cost;                    
-                        }
-                    }
-                } 
+                // for(flight f: tmpPort->departures)
+                // {
+                //     bool inSet = returnAirportNumber(f.destination) ^ primSet;
+                //     if(inSet == true)
+                //     {   
+                //         if(f.cost < cheapestFlight)
+                //         {
+                //             tmpFlight = f;
+                //             cheapestFlight = f.cost;                    
+                //         }
+                //     }
+                // } 
             }
         }
 
         if(cheapestFlight == 99999)
         {
             cout << "No more valid flights were found. " << endl;
+            cout << primSet << endl;
             for(flight f: flightsTaken)
             {
                 cout << f.source << " " << f.destination << " " << f.departure << " " << f.arrival << " " << f.cost << " " << f.miles << " " << f.airline << " " << f.ID << endl;
